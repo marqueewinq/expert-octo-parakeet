@@ -9,7 +9,8 @@ function get_new_tag() {
     export NEW_TAG=$(echo "${latest_tag}" | sed -e "s/alpha${BASH_REMATCH[4]}/alpha$((${BASH_REMATCH[4]} + 1))/g")
   else
     if [[ ${latest_tag} =~ ${RELEASE_REGEX} ]]; then
-      export NEW_TAG=$(echo "${latest_tag}" | sed -e "s/.${BASH_REMATCH[3]}$/.$((${BASH_REMATCH[3]} + 1))/g")
+      # export NEW_TAG=$(echo "${latest_tag}" | sed -e "s/.${BASH_REMATCH[3]}$/.$((${BASH_REMATCH[3]} + 1))/g")
+      export NEW_TAG="${latest_tag}-alpha0"
     else
       return 1
     fi
@@ -19,7 +20,7 @@ function get_new_tag() {
   return 0
 }
 
-echo $(get_new_tag "v1.0.32-alpha14")
-echo $(get_new_tag "v1.0.0-alpha17")
-echo $(get_new_tag "v1.0.1")
-echo $(get_new_tag $(get_new_tag "v1.0.1"))
+# echo $(get_new_tag "v1.0.32-alpha14")
+# echo $(get_new_tag "v1.0.0-alpha17")
+# echo $(get_new_tag "v1.0.1")
+# echo $(get_new_tag $(get_new_tag "v1.0.1"))
