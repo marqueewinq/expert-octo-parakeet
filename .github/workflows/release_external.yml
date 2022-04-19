@@ -1,0 +1,40 @@
+name: Release (External)
+on:
+  workflow_dispatch:
+    inputs:
+      release_body:
+        description: 'When set, adds extra text to body.'
+        required: false
+        default: ''
+
+jobs:
+  create-branch-and-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get short sha
+        uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+
+      - name: Create next release tag
+        id: get-next-tag
+        run: |
+          export LATEST_TAG="${{ steps.get-latest-tag.outputs.tag }}"
+          echo "Latest tag is: ${LATEST_TAG}"
+
+          source ./bash.sh
+
+          export NEW_TAG=$(release_external ${LATEST_TAG})
+          echo "New tag is: ${NEW_TAG}"
+
+          echo ::set-output name=tag::${NEW_TAG}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: "release-${{ steps.get-next-tag.outputs.tag }}"
+          title: "Release ${{ steps.get-next-tag.outputs.tag }}"
+          body: "❗❗❗ Add description ❗❗❗"

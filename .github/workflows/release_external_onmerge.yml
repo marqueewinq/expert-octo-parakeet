@@ -1,0 +1,9 @@
+name: Release (On merge release-)
+on:
+  workflow_dispatch:
+    inputs:
+      release_body:
+        description: 'When set, adds extra text to body.'
+        required: false
+        default: ''
+
