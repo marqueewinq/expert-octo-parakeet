@@ -1,4 +1,4 @@
-name: Release (On merge release-)
+name: Final release (merge)
 on:
   on:
     pull_request:
