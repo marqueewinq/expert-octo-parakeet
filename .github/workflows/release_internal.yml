@@ -1,5 +1,7 @@
 name: Release (Internal)
 on:
+  push:
+    branch: "main"
   workflow_dispatch:
     inputs:
       release_body:
