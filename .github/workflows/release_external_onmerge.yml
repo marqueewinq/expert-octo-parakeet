@@ -1,16 +1,37 @@
 name: Release (On merge release-)
 on:
-  workflow_dispatch:
-    inputs:
-      release_body:
-        description: 'When set, adds extra text to body.'
-        required: false
-        default: ''
-
+  on:
+    pull_request:
+      types: [closed]
 
 jobs:
   create-final-tag:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Get short sha
+        uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+
+      - name: Create next release tag
+        id: get-next-tag
+        run: |
+          export LATEST_TAG="${{ steps.get-latest-tag.outputs.tag }}"
+          echo "Latest tag is: ${LATEST_TAG}"
+
+          source ./bash.sh
+
+          export NEW_TAG=$(release_external ${LATEST_TAG})
+          echo "New tag is: ${NEW_TAG}"
+
+          echo ::set-output name=tag::${NEW_TAG}
+
+      - uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "${{ steps.get-next-tag.outputs.tag }}"
+          message: "${{ github.event.inputs.release_body }}"
