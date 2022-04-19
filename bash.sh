@@ -24,3 +24,5 @@ function get_new_tag() {
 # echo $(get_new_tag "v1.0.0-alpha17")
 # echo $(get_new_tag "v1.0.1")
 # echo $(get_new_tag $(get_new_tag "v1.0.1"))
+#
+#
