@@ -1,17 +1,11 @@
 name: Release (Internal)
 on:
-  push:
-    branch: "main"
   workflow_dispatch:
     inputs:
       release_body:
         description: 'When set, adds extra text to body.'
         required: false
         default: ''
-
-env:
-  RELEASE_REGEX_ALPHA: "^v[0-9]+.[0-9]+.[0-9]+-alpha[0-9]+$"
-  RELEASE_REGEX: "^v[0-9]+.[0-9]+.[0-9]+$"
 
 jobs:
   create-tag-and-release:
@@ -33,7 +27,7 @@ jobs:
 
           source ./bash.sh
 
-          export NEW_TAG=$(get_new_tag ${LATEST_TAG})
+          export NEW_TAG=$(release_internal ${LATEST_TAG})
           echo "New tag is: ${NEW_TAG}"
 
           echo ::set-output name=tag::${NEW_TAG}
