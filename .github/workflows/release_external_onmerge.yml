@@ -1,8 +1,7 @@
 name: Final release (merge)
 on:
-  on:
-    pull_request:
-      types: [closed]
+  pull_request:
+    types: [closed]
 
 jobs:
   create-final-tag:
