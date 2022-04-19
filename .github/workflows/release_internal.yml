@@ -22,9 +22,8 @@ jobs:
       - name: Get short sha
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
-      - name: Get latest tag
+      - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
-        run: echo ::set-output name=tag::$(echo $GITHUB_REF | cut -d / -f 3)
 
       - name: Create next tag
         id: get-next-tag
