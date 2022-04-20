@@ -5,6 +5,7 @@ on:
 
 jobs:
   create-tag-and-release:
+    if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,7 +17,7 @@ jobs:
         id: get-latest-tag
 
       - name: Extract branch name
-        id: extract-branch
+        id: get-current-branch
         run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})
 
       - name: Create next release candidate tag
@@ -25,9 +26,12 @@ jobs:
           export LATEST_TAG="${{ steps.get-latest-tag.outputs.tag }}"
           echo "Latest tag is: ${LATEST_TAG}"
 
+          export CURRENT_BRANCH="${{ steps.get-current-branch.outputs.branch }}"
+          echo "Current branch is: ${CURRENT_BRANCH}"
+
           source ./bash.sh
 
-          export NEW_TAG=$(release_candidate ${LATEST_TAG})
+          export NEW_TAG=$(release_candidate ${LATEST_TAG} ${CURRENT_BRANCH})
           echo "New tag is: ${NEW_TAG}"
 
           echo ::set-output name=tag::${NEW_TAG}
