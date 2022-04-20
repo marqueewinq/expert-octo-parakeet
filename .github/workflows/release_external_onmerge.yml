@@ -1,12 +1,14 @@
 name: Final release (merge)
 on:
   pull_request:
-    types: [closed]  # merged?
+    types: 
+     - closed 
+#    - merged?
 
 jobs:
-  create-final-tag:
+  create-final-tag-on-branch:
     runs-on: ubuntu-latest
-    # if: github.event.pull_request.merged == 'true'
+    if: github.event.pull_request.merged == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -34,3 +36,4 @@ jobs:
         with:
           tag: "${{ steps.get-next-tag.outputs.tag }}"
           message: "${{ github.event.inputs.release_body }}"
+          commit_sha: "${{github.event.pull_request.head.sha}}"
