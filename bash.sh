@@ -3,6 +3,8 @@ set -euxo
 
 export RELEASE_REGEX_ALPHA="^v([0-9]+).([0-9]+).([0-9]+)-alpha([0-9]+)$"
 export RELEASE_REGEX="^v([0-9]+).([0-9]+).([0-9]+)$"
+export RELEASE_REGEX_CANDIDATE="^v([0-9]+).([0-9]+).([0-9]+)-rc([0-9]+)$"
+export RELEASE_REGEX_BRANCH_NAME="^release-v([0-9]+).([0-9]+).([0-9]+)$"
 
 function release_internal() {
   latest_tag=$1
@@ -38,6 +40,35 @@ function release_external() {
   return 0
 }
 
+function release_candidate() {
+  latest_tag=$1
+  branch_name=$2
+
+  if [[ ${latest_tag} =~ ${RELEASE_REGEX_ALPHA} ]]; then
+    # remove -alphaxx suffix
+    export latest_tag=$(echo ${latest_tag} | sed -e "s/-alpha[0-9]*//g")
+  fi
+
+  if [[ ${branch_name} =~ ${RELEASE_REGEX_BRANCH_NAME} ]]; then
+    major=${BASH_REMATCH[1]}
+    minor=${BASH_REMATCH[2]}
+    patch=${BASH_REMATCH[3]}
+    if [[ ${latest_tag} =~ ^v${major}.${minor}.${patch}-rc[0-9]+$ ]]; then
+      if [[ ${latest_tag} =~ ${RELEASE_REGEX_CANDIDATE} ]]; then
+        export NEW_TAG="v${major}.${minor}.${patch}-rc$((${BASH_REMATCH[4]} + 1))"
+      else
+        export NEW_TAG="v${major}.${minor}.${patch}-rc0"
+      fi
+    else
+      export NEW_TAG="v${major}.${minor}.${patch}-rc0"
+    fi
+  else
+    return 1
+  fi
+
+  echo ${NEW_TAG}
+  return 0
+}
 
 # unit tests
 
@@ -50,3 +81,9 @@ assert_eq "v1.0.1-alpha0" $(release_internal "v1.0.1")
 assert_eq "v1.0.1-alpha1" $(release_internal $(release_internal "v1.0.1"))
 assert_eq "v1.14.1" $(release_external $(release_external "v1.12.1"))
 assert_eq "v1.4.3" $(release_external $(release_internal "v1.3.3"))
+
+assert_eq "v1.4.3-rc0" $(release_candidate "" "release-v1.4.3")
+assert_eq "v2.4.3-rc0" $(release_candidate "v2.3.3" "release-v2.4.3")
+assert_eq "v3.4.3-rc0" $(release_candidate "v3.4.3" "release-v3.4.3")
+assert_eq "v4.4.3-rc1" $(release_candidate "v4.4.3-rc0" "release-v4.4.3")
+assert_eq "v5.4.3-rc1" $(release_candidate $(release_candidate "v5.4.3" "release-v5.4.3") "release-v5.4.3")

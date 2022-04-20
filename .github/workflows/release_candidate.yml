@@ -1,25 +1,25 @@
-name: Tag the release branch (on merge)
+name: Increment release candidate
 on:
-  pull_request:
-    types: 
-     - closed 
-#    - merged?
+  workflow_dispatch:
+    inputs: {}
 
 jobs:
-  create-final-tag-on-branch:
+  create-tag-and-release:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Get short sha
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
 
-      - name: Create next release tag
+      - name: Extract branch name
+        id: extract-branch
+        run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})
+
+      - name: Create next release candidate tag
         id: get-next-tag
         run: |
           export LATEST_TAG="${{ steps.get-latest-tag.outputs.tag }}"
@@ -27,7 +27,7 @@ jobs:
 
           source ./bash.sh
 
-          export NEW_TAG=$(release_external ${LATEST_TAG})
+          export NEW_TAG=$(release_candidate ${LATEST_TAG})
           echo "New tag is: ${NEW_TAG}"
 
           echo ::set-output name=tag::${NEW_TAG}
@@ -36,4 +36,4 @@ jobs:
         with:
           tag: "${{ steps.get-next-tag.outputs.tag }}"
           message: "${{ github.event.inputs.release_body }}"
-          commit_sha: "${{github.event.pull_request.head.sha}}"
+          commit_sha: "${{ steps.short-sha.outputs.sha }}"
