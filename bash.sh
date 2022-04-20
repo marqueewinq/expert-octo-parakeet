@@ -28,6 +28,10 @@ function release_external() {
     # remove -alphaxx suffix
     export latest_tag=$(echo ${latest_tag} | sed -e "s/-alpha[0-9]*//g")
   fi
+  if [[ ${latest_tag} =~ ${RELEASE_REGEX_ALPHA} ]]; then
+    # remove -rcxx suffix
+    export latest_tag=$(echo ${latest_tag} | sed -e "s/-rc[0-9]*//g")
+  fi
 
   if [[ ${latest_tag} =~ ${RELEASE_REGEX} ]]; then
     export NEW_TAG=$(echo "${latest_tag}" | \
