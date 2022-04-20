@@ -2,6 +2,8 @@
 
 A change.
 
+A change in release branch.
+
 Another slight modification.
 
 Yet another modification.
