@@ -8,7 +8,7 @@ on:
 jobs:
   create-final-tag-on-branch:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == 'true'
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
