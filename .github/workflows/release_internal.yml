@@ -8,7 +8,7 @@ on:
         default: ''
 
 env:
-  GITHUB_TOKEN: ${{ secrets.COMMIT_KEY }}
+  GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
 
 jobs:
   create-tag-and-release:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ssh-key: "${{ secrets.COMMIT_KEY }}"
+          ssh-key: "${{ secrets.DEPLOY_TOKEN }}"
       - name: Get short sha
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
