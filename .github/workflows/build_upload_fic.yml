@@ -1,10 +1,9 @@
 on:
-  push:
-    tags:
-      - v**
+  create
 
 jobs:
   build-fiction:
     runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - run: echo "Build upload with tag ${{ github.ref_name }}"
