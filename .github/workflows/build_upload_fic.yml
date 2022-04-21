@@ -1,5 +1,7 @@
 on:
-  create
+  push:
+    tags:
+      - '*'
 
 jobs:
   build-fiction:
