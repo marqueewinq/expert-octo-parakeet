@@ -1,0 +1,10 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-fiction:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Build upload"
