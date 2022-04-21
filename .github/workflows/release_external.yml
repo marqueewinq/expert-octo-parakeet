@@ -37,14 +37,12 @@ jobs:
           echo NEW_BRANCH=release-${{ steps.get-next-tag.outputs.tag }} >> $GITHUB_ENV
 
       - uses: peterjgrainger/action-create-branch@v2.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: ${{ env.NEW_BRANCH }}
+          github_token: ${{ secrets.PA_TOKEN }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+      - name: Create tag ${{ github.event.inputs.tagname }}-rc0
+        uses: rickstaa/action-create-tag@v1
         with:
-          branch: ${{ env.NEW_BRANCH }}
-          title: "Release ${{ steps.get-next-tag.outputs.tag }}"
-          body: "❗❗❗ Add description ❗❗❗"
+          tag: "${{ steps.get-next-tag.outputs.tag }}-rc0"
+          github_token: ${{ secrets.PA_TOKEN }}
