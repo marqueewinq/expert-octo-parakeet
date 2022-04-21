@@ -7,17 +7,15 @@ on:
         required: false
         default: ''
 
-env:
-  GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
-
 jobs:
   create-tag-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
         with:
           persist-credentials: false
+
       - name: Get short sha
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
@@ -41,3 +39,4 @@ jobs:
         with:
           tag: "${{ steps.get-next-tag.outputs.tag }}"
           message: "${{ github.event.inputs.release_body }}"
+          github_token: ${{ secrets.PA_TOKEN }}
