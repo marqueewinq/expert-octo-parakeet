@@ -7,12 +7,17 @@ on:
         required: false
         default: ''
 
+env:
+  GITHUB_TOKEN: ${{ secrets.COMMIT_KEY }}
+
 jobs:
   create-tag-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ssh-key: "${{ secrets.COMMIT_KEY }}"
       - name: Get short sha
         uses: benjlevesque/short-sha@v1.2
         id: short-sha
