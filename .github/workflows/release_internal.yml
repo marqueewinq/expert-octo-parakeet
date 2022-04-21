@@ -7,9 +7,6 @@ on:
         required: false
         default: ''
 
-env:
-  GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
-
 jobs:
   create-tag-and-release:
     runs-on: ubuntu-latest
