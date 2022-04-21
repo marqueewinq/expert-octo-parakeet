@@ -3,11 +3,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_run:
-    workflows:
-      - Release (Internal)
-    types:
-      - completed
 
 jobs:
   build-fiction:
