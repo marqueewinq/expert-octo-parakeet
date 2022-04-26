@@ -48,7 +48,7 @@ jobs:
         with:
           branch: ${{ env.NEW_BRANCH }}
 
-      - name: Create tag ${{ github.event.inputs.tagname }}-rc0
+      - name: Create tag ${{ steps.get-next-tag.outputs.tag }}-rc0
         uses: rickstaa/action-create-tag@v1
         with:
           tag: "${{ steps.get-next-tag.outputs.tag }}-rc0"
